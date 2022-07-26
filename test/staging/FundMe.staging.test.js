@@ -1,0 +1,27 @@
+const { network, getNamedAccounts, ethers } = require("hardhat");
+const { developmentChains } = require("../../helper-hardhat-config");
+const { assert } = require("chai");
+
+// this will run only when we are not on a development chain.
+developmentChains.includes(network.name) ?
+	describe.skip :
+	describe("FundMe", async function() {
+		let fundMe, deployer;
+		const sendValue = ethers.utils.parseEther("0.1");
+		
+		beforeEach(async function() {
+			deployer = (await getNamedAccounts()).deployer;
+			console.log(deployer);
+			fundMe = await ethers.getContract("FundMe", deployer);
+			console.log(fundMe.address);
+		})
+
+		it("allows people to fund and withdraw", async function() {
+			await fundMe.fund({ value: sendValue });
+			const transactionResponse = await fundMe.withdraw();
+			await transactionResponse.wait(1);
+
+			const endingBalance = await fundMe.provider.getBalance(fundMe.address);
+			assert.equal(endingBalance.toString(), "0");
+		})
+	})
