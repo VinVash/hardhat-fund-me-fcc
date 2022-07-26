@@ -41,7 +41,7 @@ module.exports = {
             accounts: [PRIVATE_KEY],
             chainId: 4,
             blockConfirmations: 6,
-            gas: 6000000,
+            // gas: 6000000,
         },
     },
     solidity: {
